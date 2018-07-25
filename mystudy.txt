@@ -1,0 +1,215 @@
+Errors happen all the time in the software world. It might be an invalid user input or an external system that is not responding, or it’s a simple programming error. In all these situations, the errors occur at runtime and the application needs to handle them. Otherwise, it crashes and can’t process further requests. Java provides a powerful mechanism which allows you to handle the exceptional event where it occurred or in one of the higher methods in the call stack.
+
+What is a Call Stack : lets say  Method1 calls method2 which calls method3. The call stack now contains the following three entries i.e  method3,  method2,  method1.
+The call stack is the ordered list of methods that had been called to get to a specific method.'
+
+To understand why we need exceptions undersand these situations. 
+
+Example 1 in code below, You are trying to find out length of null string it will give you java.lang.NullPointerException.
+Example 2 Integer.parseInt(data) is trying to parase a string which does not contain number, you will get error java.lang.NumberFormatException
+Example 3 charAt(10) you are trying to access a index which is out of range. Text is actually only 8 bytes. java.lang.StringIndexOutOfBoundsException
+Example 4 you are trying to divide a number by 0. java.lang.ArithmeticException
+
+On the same lines based on the code you might have many such exceptions possible. We are just dicussing few examples to understand the concept. 
+When a method throws an exception object, the runtime searches the call stack for a piece of code that handles it.
+
+Unchecked exceptions extend the RuntimeException. You should use them for internal errors that you can’t anticipate and that, most often, the application can’t recover from. Methods can but don’t need to handle or specify an unchecked exception. Typical examples that throw unchecked exceptions are:
+Missing initialization of a variable which results in a NullPointerException or
+Improper use of an API that causes an IllegalArgumentException. Again these are basically RunTimeException which is caused
+			due to users values. java leaves it to programmer that weather he wants to handle it or not. If its not handled
+			then jvm will print the reason and terminate the app abnormally. Eg: ArithmeticException, 
+			ArrayIndexOutOfBoundException, NullPointerException,ClassCastException etc
+
+Above examples are all unchecked exceptions. 
+
+Checked exceptions for all exceptional events that you can anticipate and that a well-written application should be able to handle. A checked exception extends the Exception class. A method that throws a checked exception or that calls a method that specifies a checked exception needs to either specify or handle it.
+We will see with example here.J ava compiler forces the programmer to handle it.few egs: FileNotFoundException, ClassNotFoundException,SQLException etc
+
+
+Try-Catch-Finally
+
+That is the classical approach to handle an exception in Java. It can consist of 3 steps:
+
+    a try block that encloses the code section which might throw an exception,
+    one or more catch blocks that handle the exception and
+    a finally block which gets executed after the try block was successfully executed or a thrown exception was handled.
+
+The try block is required, and you can use it with or without a catch or finally block.
+
+It encloses the part of your code that might throw the exception. If your code throws more than one exception, you can choose if you want to:
+
+    use a separate try block for each statement that could throw an exception or
+    use one try block for multiple statements that might throw multiple exceptions.
+    
+    The Catch Block
+
+You can implement the handling for one or more exception types within a catch block. Here you specificy what to do when you encounter an exception.
+ You can, for example, show an error message to the user and request a different input or you could write a record into the work log of your batch process. Sometimes, it might even be ok to catch and ignore the exception.
+ And in production, you also need to monitor your application and its exception handling. That’s where Retrace and its error monitoring capabilities become very helpful.
+ 
+ The Finally Block
+
+The finally block gets executed after the successful execution of the try block or after one of the catch blocks handled an exception. It is, therefore, a good place to implement any cleanup logic, like closing a connection or an InputStream.
+
+Notes :
+Try should be immediately followed by a catch or finally block.
+there can be any number of catch blocks but only one try and one finally
+where finally should be the last block of try catch.
+While handling exception using catch blocks we should follow the proper 
+heirarchy  first catch block shouldnt be parent class  
+
+If you catch a parent class i.e general EXCEPTION First then no point in halding child execptions after that since anyway parent catch block will catch all the exceptions. First catch block execution will skip other catch. 
+
+
+
+Small example :
+
+public class Exception2 
+{
+	
+	public static void main(String[] args) 
+	{
+		System.out.println("Exception Demo");
+		
+		try
+		{
+		String name = null;
+		System.out.println("Lets try to display null " + name);
+		System.out.println("Lets try to display length of null " + name.length());
+		}catch (NullPointerException e)
+		{
+			System.out.println(" You cannot use length function with string "+ e);
+		}
+		finally 
+		{
+			System.out.println("Clen up Logic here");
+		}
+	}
+
+
+
+}
+
+Output
+Exception Demo
+Lets try to display null null
+ You cannot use length function with string java.lang.NullPointerException
+Clen up Logic here
+
+
+ Handling Multiple Exceptions :
+ public class Exception3 
+{
+	
+	public static void main(String[] args) 
+	{
+		System.out.println("Exception Demo");
+		int a,b,c;
+		try
+		{
+		String name = null;
+		System.out.println("Lets try to display null " + name);
+		System.out.println("Lets try to display length of null " + name.length());
+		
+		Scanner s = new Scanner(System.in);
+		System.out.println("Enter first number");
+		a=s.nextInt();
+		System.out.println("Enter second number");
+		b=s.nextInt();
+		c=a/b;
+		System.out.println("division of first/second is   " + c);
+
+		
+		}catch (NullPointerException e)
+		{
+			System.out.println(" You cannot use length function with string "+ e);
+		}
+		catch (ArithmeticException e)
+		{
+			System.out.println(" You cannot divide by 0 "+ e);
+		}
+
+		finally 
+		{
+			System.out.println("Clen up Logic here");
+		}
+	}
+ 
+ --------
+ throw
+throw is used to create the userdefined message based custom exception
+and can be thrown so where u can modify the message or customise
+different messages for a same exception class.
+ Custom exception. You can a class with your own name or custom exception
+
+class InvalidAge extends Exception
+{
+	public InvalidAge(String message)
+	{
+	super(message);
+	}
+}
+		// your own exception InvalidAge is a class that has extended exception.
+		// you can pass message to your construtor 
+		try 
+		{
+			System.out.println("Your application logic is here... ");
+			System.out.println("Lets say based on some condition you want to raise exception ");
+			throw new InvalidAge("Age is below 18 years cannot vote");
+		}
+		catch(InvalidAge e )
+		{
+			System.out.println("You are in your own exception " + e);
+			
+			
+		}
+
+
+Output
+Your application logic is here... 
+Lets say based on some condition you want to raise exception 
+You are in your own exception exception.InvalidAge: Age is below 18 years cannot vote
+------------
+
+throws is just left to programmer to decide if he wants to implement the exception. 
+
+lets say if we have a class as below.
+
+public class calc {
+
+	calc(){}
+	public int div(int a, int b) throws Exception 
+	{
+		return a/b;
+		
+	}
+}
+
+
+Now if you write main method like below in eclipse you will get an error in IDE. Since class calc has 
+already declared that it might throw an exception it is expected that your class either catches it in try catch block or declares as trows exception. 
+ 
+
+
+public class testthrows {
+
+	public static void main(String [] args)
+	{
+	int a=10;
+	int b=0;
+	calc c = new calc();
+	int result = c.div(a,b);
+	}
+}
+
+
+difference between throw and throws. 
+
+
+Notes :
+If super class method does not declare any exception then the sub class overriden method cannot declare checked exception but it can declare unchecked exceptions.
+
+
+
+    
+    
